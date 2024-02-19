@@ -1,0 +1,38 @@
+contract PaymentService {
+  dates {
+    beginDate = 2023-09-25 21:21:42
+    dueDate = 2023-09-26 21:21:42
+  }
+
+  parties {
+    application = "E-commerce"
+    process = "Payment Service"
+  }
+
+  variables {
+    payments = "$.data.length()"
+    value = "$.data.[*].value"
+  }
+
+  clauses {
+    right requestPayment {
+      rolePlayer = application
+      operation = request
+
+      terms {
+        MaxNumberOfOperation(5 per Minute),
+        MessageContent(payments <= 100),
+        MessageContent(value <= 100000)
+      }
+    }
+
+    obligation responsePayment {
+      rolePlayer = process
+      operation = response
+
+      terms {
+        Timeout(2)
+      }
+    }
+  }
+}
